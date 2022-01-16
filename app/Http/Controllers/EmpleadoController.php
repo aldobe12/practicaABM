@@ -14,8 +14,8 @@ class EmpleadoController extends Controller
      */
     public function index()
     {
-        $datos['empleados']=Empleado::paginate(5);
-       
+        $datos['empleados'] = Empleado::paginate(5);
+
         return view('empleado.index', $datos);
     }
 
@@ -37,25 +37,25 @@ class EmpleadoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-        {
-        $campos=[
-            'user'=>'required|string|max:100',
-            'status'=>'required|integer',
-            'rol'=>'required|longtext|max:100',
-            
-        ]; 
+    {
 
-        $mensaje=[
-            'required'=>'El :attribute es obligatorio'
+        $campos = [
+            'User' => 'required|string|max:100',
+            // 'Status' => 'required|integer',
+            'Rol' => 'required|string|max:100',
+            'Status' => 'required|numeric|min:0|not_in:0',
+        ];
+
+        $mensaje = [
+            'required' => 'El :attribute es obligatorio'
         ];
 
         $this->validate($request, $campos, $mensaje);
 
         $datosEmpleado = request()->except('_token');
         Empleado::insert($datosEmpleado);
-        
-        return redirect('empleado')->with('mensaje','Empleado agregado con éxito');
 
+        return redirect('empleado')->with('mensaje', 'Empleado agregado con éxito');
     }
 
     /**
@@ -77,9 +77,8 @@ class EmpleadoController extends Controller
      */
     public function edit($id)
     {
-        $empleado=Empleado::findOrFail($id);
+        $empleado = Empleado::findOrFail($id);
         return view('empleado.edit', compact('empleado'));
-        
     }
 
     /**
@@ -91,12 +90,12 @@ class EmpleadoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $datosEmpleado = request()->except('_token','_method');
-        Empleado::where('id','=',$id)->update($datosEmpleado);
-    
-        $empleado=Empleado::findOrFail($id);
-       // return view('empleado.edit', compact('empleado'));
-        return redirect('empleado')->with('mensaje','Empleado Actualizado');
+        $datosEmpleado = request()->except('_token', '_method');
+        Empleado::where('id', '=', $id)->update($datosEmpleado);
+
+        $empleado = Empleado::findOrFail($id);
+        // return view('empleado.edit', compact('empleado'));
+        return redirect('empleado')->with('mensaje', 'Empleado Actualizado');
     }
 
     /**
@@ -109,6 +108,6 @@ class EmpleadoController extends Controller
     {
         Empleado::destroy($id);
         //return redirect('empleado');
-        return redirect('empleado')->with('mensaje','Empleado borrado con éxito ');
-    } 
+        return redirect('empleado')->with('mensaje', 'Empleado borrado con éxito ');
+    }
 }
